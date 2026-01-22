@@ -138,9 +138,38 @@ const PDF_REFERENCE = {
 };
 
 // --- GEMINI API INTEGRATION ---
-// ĐÃ SỬA: Kiểm tra xem biến 'process' có tồn tại không trước khi truy cập để tránh lỗi Crash trên trình duyệt
-// Dòng này vẫn sẽ hoạt động tốt khi deploy lên Vercel
-const apiKey = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_GEMINI_API_KEY) || "";
+// ĐÃ SỬA: Hàm này hỗ trợ cả Vite và Create React App để tránh lỗi "process is not defined"
+const getApiKey = () => {
+  let key = "";
+  
+  // 1. Thử lấy Key theo cách của Vite (biến môi trường bắt đầu bằng VITE_)
+  try {
+    // @ts-ignore
+    if (import.meta && import.meta.env && import.meta.env.VITE_GEMINI_API_KEY) {
+      // @ts-ignore
+      key = import.meta.env.VITE_GEMINI_API_KEY || "";
+    }
+  } catch (e) {
+    // Bỏ qua lỗi nếu không phải môi trường Vite
+  }
+
+  // Nếu đã tìm thấy key thì trả về luôn
+  if (key) return key;
+
+  // 2. Thử lấy Key theo cách cũ (Create React App - biến môi trường bắt đầu bằng REACT_APP_)
+  try {
+    if (typeof process !== 'undefined' && process.env) {
+      // @ts-ignore
+      key = process.env.REACT_APP_GEMINI_API_KEY || "";
+    }
+  } catch (e) {
+     // Bỏ qua lỗi nếu không có process
+  }
+
+  return key;
+};
+
+const apiKey = getApiKey();
 
 const callGemini = async (prompt: string, retries = 3): Promise<string> => {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
