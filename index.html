@@ -138,7 +138,9 @@ const PDF_REFERENCE = {
 };
 
 // --- GEMINI API INTEGRATION ---
-const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "";
+// ĐÃ SỬA: Kiểm tra xem biến 'process' có tồn tại không trước khi truy cập để tránh lỗi Crash trên trình duyệt
+// Dòng này vẫn sẽ hoạt động tốt khi deploy lên Vercel
+const apiKey = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_GEMINI_API_KEY) || "";
 
 const callGemini = async (prompt: string, retries = 3): Promise<string> => {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
@@ -174,7 +176,7 @@ export default function SentenceAnalyzer() {
   const [activeTab, setActiveTab] = useState<'unit' | 'ic' | 'functional' | 'tg' | 'explain'>('unit');
   const [selection, setSelection] = useState<number[]>([]);
   const [showInfo, setShowInfo] = useState<string | null>(null);
-  
+   
   // AI States
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
@@ -452,14 +454,14 @@ export default function SentenceAnalyzer() {
                     <div key={idx} className="flex flex-col items-center relative">
                       {/* Connecting lines */}
                       <div className="absolute top-[-1rem] w-full h-4">
-                         {/* Left/Right connectors */}
-                         <div className={`h-px bg-slate-400 absolute top-0 
-                           ${idx === 0 ? 'left-1/2 w-1/2' : ''} 
-                           ${idx === node.children!.length - 1 ? 'right-1/2 w-1/2' : ''}
-                           ${(idx > 0 && idx < node.children!.length - 1) ? 'w-full' : ''}
-                         `}></div>
-                         {/* Vertical down to child */}
-                         <div className="absolute left-1/2 top-0 h-4 w-px bg-slate-400 -translate-x-1/2"></div>
+                          {/* Left/Right connectors */}
+                          <div className={`h-px bg-slate-400 absolute top-0 
+                            ${idx === 0 ? 'left-1/2 w-1/2' : ''} 
+                            ${idx === node.children!.length - 1 ? 'right-1/2 w-1/2' : ''}
+                            ${(idx > 0 && idx < node.children!.length - 1) ? 'w-full' : ''}
+                          `}></div>
+                          {/* Vertical down to child */}
+                          <div className="absolute left-1/2 top-0 h-4 w-px bg-slate-400 -translate-x-1/2"></div>
                       </div>
                       <TreeRenderer node={child} />
                     </div>
@@ -554,7 +556,7 @@ export default function SentenceAnalyzer() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
       <ReferenceModal />
       <ChatWindow />
-      
+       
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -796,22 +798,22 @@ export default function SentenceAnalyzer() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white p-4 rounded-lg border border-slate-200">
-                       <h4 className="font-semibold text-slate-700 mb-2">Binary Cuts Explainer</h4>
-                       <textarea 
-                         placeholder="Why cut here? (e.g., Splitting Subject and Predicate...)"
-                         className="w-full h-32 p-3 text-sm bg-slate-50 border border-slate-200 rounded-md focus:border-indigo-500 focus:outline-none"
-                         defaultValue={state.explanation ? `Notes on structure: ${state.explanation}` : ''}
-                       />
+                        <h4 className="font-semibold text-slate-700 mb-2">Binary Cuts Explainer</h4>
+                        <textarea 
+                          placeholder="Why cut here? (e.g., Splitting Subject and Predicate...)"
+                          className="w-full h-32 p-3 text-sm bg-slate-50 border border-slate-200 rounded-md focus:border-indigo-500 focus:outline-none"
+                          defaultValue={state.explanation ? `Notes on structure: ${state.explanation}` : ''}
+                        />
                     </div>
                     <div className="bg-white p-4 rounded-lg border border-slate-200">
-                       <h4 className="font-semibold text-slate-700 mb-2">Ambiguity Check</h4>
-                       <p className="text-sm text-slate-600 mb-2">
-                         Can this sentence be parsed into two different trees? (e.g., "old men and women")
-                       </p>
-                       <textarea 
-                         className="w-full h-32 p-3 text-sm bg-slate-50 border border-slate-200 rounded-md focus:border-indigo-500 focus:outline-none"
-                         placeholder="Notes on different interpretations..."
-                       />
+                        <h4 className="font-semibold text-slate-700 mb-2">Ambiguity Check</h4>
+                        <p className="text-sm text-slate-600 mb-2">
+                          Can this sentence be parsed into two different trees? (e.g., "old men and women")
+                        </p>
+                        <textarea 
+                          className="w-full h-32 p-3 text-sm bg-slate-50 border border-slate-200 rounded-md focus:border-indigo-500 focus:outline-none"
+                          placeholder="Notes on different interpretations..."
+                        />
                     </div>
                   </div>
                 </div>
@@ -860,7 +862,7 @@ export default function SentenceAnalyzer() {
 
                     {/* Transitivity */}
                     <div className="col-span-1 md:col-span-3 lg:col-span-1 space-y-4">
-                       <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                        <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
                         <h3 className="font-bold text-amber-900 mb-2">Ideational: Transitivity</h3>
                         <p className="text-xs text-amber-700 mb-3">Who does what to whom? (Process Types)</p>
                         <div>
@@ -883,14 +885,14 @@ export default function SentenceAnalyzer() {
                           <textarea 
                              className="w-full mt-1 p-2 border border-amber-200 rounded bg-white text-sm h-20"
                              placeholder="e.g., Actor: The girl, Goal: The dog"
-                          />
+                           />
                         </div>
                       </div>
                     </div>
 
                     {/* Context */}
                     <div className="col-span-1 md:col-span-3 lg:col-span-1 space-y-4">
-                       <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
                         <h3 className="font-bold text-purple-900 mb-2">Interpersonal: Context</h3>
                         <p className="text-xs text-purple-700 mb-3">Mood and social relationship.</p>
                         <textarea 
@@ -932,28 +934,28 @@ export default function SentenceAnalyzer() {
                   </div>
 
                   <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                     <h3 className="font-semibold text-slate-700 mb-2">Applied Transformations (T-Rules)</h3>
-                     <div className="flex flex-wrap gap-2 mb-4">
-                       {['Passive', 'Negative', 'Question', 'Affix Hopping', 'Do-support'].map(t => (
-                         <button 
-                           key={t}
-                           onClick={() => {
-                             const hasT = state.tgNotes.transformations.includes(t);
-                             const newTs = hasT 
-                              ? state.tgNotes.transformations.filter(x => x !== t)
-                              : [...state.tgNotes.transformations, t];
-                             setState({...state, tgNotes: {...state.tgNotes, transformations: newTs}});
-                           }}
-                           className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
-                             state.tgNotes.transformations.includes(t)
-                               ? 'bg-indigo-600 text-white border-indigo-600'
-                               : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'
-                           }`}
-                         >
-                           {t}
-                         </button>
-                       ))}
-                     </div>
+                      <h3 className="font-semibold text-slate-700 mb-2">Applied Transformations (T-Rules)</h3>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {['Passive', 'Negative', 'Question', 'Affix Hopping', 'Do-support'].map(t => (
+                          <button 
+                            key={t}
+                            onClick={() => {
+                              const hasT = state.tgNotes.transformations.includes(t);
+                              const newTs = hasT 
+                               ? state.tgNotes.transformations.filter(x => x !== t)
+                               : [...state.tgNotes.transformations, t];
+                              setState({...state, tgNotes: {...state.tgNotes, transformations: newTs}});
+                            }}
+                            className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
+                              state.tgNotes.transformations.includes(t)
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'
+                            }`}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
                   </div>
 
                   <div className="flex flex-col items-center justify-center py-2 text-slate-400">
@@ -989,7 +991,7 @@ export default function SentenceAnalyzer() {
                           ✨ Generate Variations
                         </button>
                     </div>
-                    
+                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
                         <p className="text-xs font-bold text-orange-800 uppercase mb-2">To Passive</p>
@@ -1031,22 +1033,22 @@ export default function SentenceAnalyzer() {
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                       <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                         <h4 className="font-bold text-slate-700 mb-2 text-sm uppercase">Analysis Summary</h4>
-                         <ul className="text-sm space-y-2 text-slate-600 list-disc pl-4">
-                           <li><strong>Theme:</strong> {state.functionalNotes.theme || "Not analyzed"}</li>
-                           <li><strong>Process:</strong> {state.functionalNotes.process || "Not analyzed"}</li>
-                           <li><strong>Transformations:</strong> {state.tgNotes.transformations.join(", ") || "None"}</li>
-                         </ul>
-                       </div>
-                       
-                       <div className="bg-white p-4 rounded-lg border border-slate-200">
-                         <h4 className="font-bold text-slate-700 mb-2 text-sm">Guided Reflection</h4>
-                         <ul className="text-sm space-y-3 text-slate-600">
-                           <li className="flex gap-2 items-start"><ChevronRight size={14} className="mt-1" /> Why was this Theme chosen? What does it foreground?</li>
-                           <li className="flex gap-2 items-start"><ChevronRight size={14} className="mt-1" /> How would the meaning change if the Deep Structure was transformed differently (e.g., Passive)?</li>
-                         </ul>
-                       </div>
+                        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                          <h4 className="font-bold text-slate-700 mb-2 text-sm uppercase">Analysis Summary</h4>
+                          <ul className="text-sm space-y-2 text-slate-600 list-disc pl-4">
+                            <li><strong>Theme:</strong> {state.functionalNotes.theme || "Not analyzed"}</li>
+                            <li><strong>Process:</strong> {state.functionalNotes.process || "Not analyzed"}</li>
+                            <li><strong>Transformations:</strong> {state.tgNotes.transformations.join(", ") || "None"}</li>
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-white p-4 rounded-lg border border-slate-200">
+                          <h4 className="font-bold text-slate-700 mb-2 text-sm">Guided Reflection</h4>
+                          <ul className="text-sm space-y-3 text-slate-600">
+                            <li className="flex gap-2 items-start"><ChevronRight size={14} className="mt-1" /> Why was this Theme chosen? What does it foreground?</li>
+                            <li className="flex gap-2 items-start"><ChevronRight size={14} className="mt-1" /> How would the meaning change if the Deep Structure was transformed differently (e.g., Passive)?</li>
+                          </ul>
+                        </div>
                     </div>
 
                     <div className="h-full">
